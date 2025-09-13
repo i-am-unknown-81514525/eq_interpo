@@ -20,7 +20,7 @@ namespace eq_interpo
             Logger logger = new Logger();
             switcher = new Switcher() {
                 new VerticalGroupComponent() {
-
+                    new PagingTable
                 }
             };
             new App(switcher).Run();
