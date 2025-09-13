@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using ui.utils;
+using ui.math;
 
 namespace eq_interpo.components
 {
@@ -101,7 +102,27 @@ namespace eq_interpo.components
             Add(new VerticalGroupComponent()
             {
                 inner,
-                spinner
+                new HorizontalGroupComponent() {
+                    (spinner, new Fraction(1, 1))
+                }
+            });
+            spinner.onChange = ChangePage;
+        }
+
+        public PagingTable(Field top, GroupComponentConfig config, bool isLeft = true)
+        {
+            inner = new PagingTableInner(top);
+            Add(new VerticalGroupComponent()
+            {
+                inner,
+                isLeft ? new HorizontalGroupComponent() {
+                    config,
+                    (spinner, new Fraction(1, 1))
+                } :
+                new HorizontalGroupComponent() {
+                    (spinner, new Fraction(1, 1)),
+                    config
+                }
             });
             spinner.onChange = ChangePage;
         }
