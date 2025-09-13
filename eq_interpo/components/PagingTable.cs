@@ -27,12 +27,15 @@ namespace eq_interpo.components
             return new FormattedTable();
         }
 
-
         public PagingTableInner(Field top)
         {
             this.col = top.comp.Length;
             this.top = new Field(top.comp);
             ForceResize((col, 2));
+            for (int x = 0; x < col; x++)
+            {
+                this[x, 0] = top.comp[x];
+            }
         }
 
         public void PushFields(IEnumerable<Field> fields)
@@ -41,7 +44,7 @@ namespace eq_interpo.components
             ForceResize((col, 1 + fieldsArr.Length));
             for (int y = 1; y - 1 < fieldsArr.Length; y++)
             {
-                int arr_y = y;
+                int arr_y = y - 1;
                 Field field = fieldsArr[arr_y];
                 if (field.comp.Length != inner.GetSize().x)
                 {
@@ -102,9 +105,9 @@ namespace eq_interpo.components
             Add(new VerticalGroupComponent()
             {
                 inner,
-                new HorizontalGroupComponent() {
+                (new HorizontalGroupComponent() {
                     (spinner, new Fraction(1, 1))
-                }
+                }, 1)
             });
             spinner.onChange = ChangePage;
         }
@@ -115,14 +118,14 @@ namespace eq_interpo.components
             Add(new VerticalGroupComponent()
             {
                 inner,
-                isLeft ? new HorizontalGroupComponent() {
+                (isLeft ? new HorizontalGroupComponent() {
                     config,
                     (spinner, new Fraction(1, 1))
                 } :
                 new HorizontalGroupComponent() {
                     (spinner, new Fraction(1, 1)),
                     config
-                }
+                }, 1)
             });
             spinner.onChange = ChangePage;
         }

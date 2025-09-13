@@ -29,8 +29,8 @@ namespace eq_interpo
                             table.Push(
                                 new Field(
                                     new IComponent[] {
-                                        new SingleLineInputField(),
-                                        new SingleLineInputField(),
+                                        new SingleLineInputField().WithChange((comp) => comp.underline = false),
+                                        new SingleLineInputField().WithChange((comp) => comp.underline = false),
                                         new ToggleButton()
                                         .WithHandler<ToggleStore, ToggleButton>(
                                             (button_inner, ___) => {
