@@ -67,11 +67,11 @@ jobs:
                   toolchain: stable
                   override: true
             - name: Build Release
-              working-directory: ./ui/stdin_handler
+              working-directory: ui/stdin_handler
               run: cargo build --release
             - name: Rename file
               if: ${{ matrix.ext == 'dll' }}
-              working-directory: ./stdin_handler
+              working-directory: ui/stdin_handler
               run: "cp target/release/stdin_handler.dll target/release/libstdin_handler.dll"
             - name: Generate artifact attestation
               uses: actions/attest-build-provenance@v2
