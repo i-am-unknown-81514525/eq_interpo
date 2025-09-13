@@ -145,10 +145,11 @@ namespace eq_interpo.components
         {
             int curr_count = fields.Count;
             fields.Add(item);
-            if (curr_count - 1 == pg_end_idx)
+            if (curr_count - 1 == pg_end_idx) // Only update the render if it is in page (or likely)
             {
                 UpdateRender();
             }
+            UpdateSpinner();
         }
 
         public void UpdateRender()
@@ -172,10 +173,19 @@ namespace eq_interpo.components
             return (fields.GetRange(start_idx, count).ToArray(), start_idx, end_idx);
         }
 
+        public void UpdateSpinner()
+        {
+            if ((fields.Count - 1) / GetPageRenderAmount() + 1 != spinner.upper)
+            {
+                spinner.upper = (fields.Count - 1) / GetPageRenderAmount() + 1;
+            }
+        }
+
         protected override void OnResize()
         {
             base.OnResize();
             UpdateRender();
+            UpdateSpinner();
         }
     }
 }
