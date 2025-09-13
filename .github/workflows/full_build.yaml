@@ -49,6 +49,8 @@ jobs:
         runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v3
+              with:
+                  submodules: true
             - if: matrix.os == 'windows-11-arm'
               name: Install rustup on Windows ARM
               run: |
@@ -90,6 +92,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+              with:
+                  submodules: true
             - name: Install mono
               working-directory: ./.github_build
               run: sh mono_install.sh
