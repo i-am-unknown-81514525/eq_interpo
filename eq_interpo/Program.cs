@@ -1,5 +1,6 @@
 using ui.components;
 using ui.components.chainExt;
+using System.Linq;
 using ui.math;
 using eq_interpo.components;
 using ui.fmt;
@@ -13,9 +14,41 @@ namespace eq_interpo
 {
     public static class Program
     {
+        public static Poly CalculatePolynomial(List<DivDiff[]> data)
+        {
+            DivDiff[] dd0 = data[0];
+            DivDiff[] first = data.Select(x => x[0]).ToArray();
+
+            List<Poly> result = new List<Poly>();
+            foreach (DivDiff dd_each in first)
+            {
+                Fraction value = dd_each.value;
+                if (value == 0) continue;
+                Poly initial = new Poly(1);
+                if (dd_each.start_idx == 0)
+                {
+                    ui.DEBUG.DebugStore.AppendLine($"dbg assert 1: {dd_each.start_idx} not 0 CalculatePolynomial");
+                }
+                for (int i = 0; i < dd_each.end_idx; i++) // dd_each.start_idx
+                {
+                    initial *= new Poly(-dd0[i].start, 1);
+                }
+                result.Add(value * initial);
+                ui.DEBUG.DebugStore.AppendLine($"{value * initial}");
+            }
+            Poly rt_result = new Poly(0);
+            foreach (Poly poly in result)
+            {
+                rt_result += poly;
+            }
+            return rt_result;
+        }
+
         public static void ProcessMathDisplay(ContainerGroup group, Entry[] entries)
         {
-            group.out_table.Set(new DataOutput(FieldParser.Process(entries)));
+            List<DivDiff[]> processed = FieldParser.Process(entries);
+            group.out_table.Set(new DataOutput(processed));
+            group.out_meta.Set(new TextLabel(CalculatePolynomial(processed).ToString()));
         }
 
         public static void Main(string[] _)
@@ -35,6 +68,10 @@ namespace eq_interpo
                         new PageSwitcher(switcher, "Back", 0),
                         new PageSwitcher(switcher, "Next", 2)
                     }, 1)
+                },
+                new VerticalGroupComponent() {
+                    group.out_meta,
+                    (new PageSwitcher(switcher, "Back", 1), 1)
                 }
             };
             new App(switcher.inner).WithExitHandler<EmptyStore, App>((appObj) =>

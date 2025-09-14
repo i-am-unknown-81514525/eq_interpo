@@ -62,11 +62,20 @@ namespace eq_interpo.math
             {
                 for (int l_r = 0; l_r <= right.GetGreatestOrder(); l_r++)
                 {
-                    out_frac[l_i + l_r] = left[l_i] * right[l_r];
+                    out_frac[l_i + l_r] += left[l_i] * right[l_r];
                 }
             }
             return new Poly(out_frac);
         }
+
+        public static Poly operator *(Poly left, Fraction right) => left * new Poly(right);
+        public static Poly operator *(Fraction left, Poly right) => new Poly(left) * right;
+        public static Poly operator +(Poly left, Fraction right) => left + new Poly(right);
+        public static Poly operator +(Fraction left, Poly right) => new Poly(left) + right;
+        public static Poly operator -(Poly left, Fraction right) => left - new Poly(right);
+        public static Poly operator -(Fraction left, Poly right) => new Poly(left) - right;
+        public static Poly operator -(Poly left) => new Fraction(0) - left;
+        public static Poly operator +(Poly left) => left;
 
         public override string ToString()
         {
@@ -80,9 +89,9 @@ namespace eq_interpo.math
                 {
                     continue;
                 }
-                string sign = value >= 0 ? "+" : "-";
+                string sign = value >= 0 ? "+" : "";
                 string postfix = $"x{FieldParser.GetSuperScript(order)}";
-                if (initial && value < 0)
+                if (initial && value >= 0)
                 {
                     sign = "";
                 }
