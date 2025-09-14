@@ -44,6 +44,13 @@ namespace eq_interpo.components
             ForceResize((col, 1 + fieldsArr.Length));
             for (int y = 1; y - 1 < fieldsArr.Length; y++)
             {
+                for (int x = 0; x < inner.GetSize().x; x++)
+                {
+                    this[x, y] = new Padding();
+                }
+            }
+            for (int y = 1; y - 1 < fieldsArr.Length; y++)
+            {
                 int arr_y = y - 1;
                 Field field = fieldsArr[arr_y];
                 if (field.comp.Length != inner.GetSize().x)
@@ -130,6 +137,23 @@ namespace eq_interpo.components
             spinner.onChange = ChangePage;
         }
 
+        public PagingTable(Field top, GroupComponentConfig left, GroupComponentConfig right)
+        {
+            inner = new PagingTableInner(top);
+            Add(new VerticalGroupComponent()
+            {
+                inner,
+                (
+                    new HorizontalGroupComponent() {
+                        left,
+                        (spinner, new Fraction(1, 1)),
+                        right
+                    }, 1
+                )
+            });
+            spinner.onChange = ChangePage;
+        }
+
         public int GetPageRenderAmount()
         {
             int size = (int)GetAllocSize().y - 3;
@@ -148,7 +172,19 @@ namespace eq_interpo.components
         {
             int curr_count = fields.Count;
             fields.Add(item);
-            if (curr_count - 1 == pg_end_idx) // Only update the render if it is in page (or likely)
+            if (curr_count - 2 <= pg_end_idx) // Only update the render if it is in page (or likely)
+            {
+                virt_pg_idx = curr_count;
+                UpdateRender();
+            }
+            UpdateSpinner();
+        }
+
+        public void RemoveLast()
+        {
+            int rm_idx = fields.Count - 1;
+            fields.RemoveAt(rm_idx);
+            if (pg_idx <= rm_idx && rm_idx <= pg_end_idx)
             {
                 UpdateRender();
             }
@@ -160,6 +196,7 @@ namespace eq_interpo.components
             Field[] result;
             (result, pg_idx, pg_end_idx) = RenderWith(virt_pg_idx);
             inner.PushFields(result);
+            spinner.HiddenChange(pg_idx / GetPageRenderAmount() + 1);
             SetHasUpdate();
         }
 
@@ -173,22 +210,46 @@ namespace eq_interpo.components
                 end_idx = fields.Count - 1;
             }
             int count = end_idx - start_idx + 1;
+            ui.DEBUG.DebugStore.AppendLine($"start_idx={start_idx}, end_idx={end_idx}, count={count} fields.Count={fields.Count}");
+            if (end_idx < 0)
+            {
+                return (new Field[] { }, 0, 0);
+            }
+            if (start_idx > end_idx)
+            {
+                return RenderWith(end_idx);
+            }
             return (fields.GetRange(start_idx, count).ToArray(), start_idx, end_idx);
         }
 
         public void UpdateSpinner()
         {
-            if ((fields.Count - 1) / GetPageRenderAmount() + 1 != spinner.upper)
+            int maxPage = (fields.Count - 1) / GetPageRenderAmount() + 1;
+            if (maxPage != spinner.upper)
             {
-                spinner.upper = (fields.Count - 1) / GetPageRenderAmount() + 1;
+                spinner.upper = maxPage;
+            }
+            if (maxPage < spinner.amount)
+            {
+                spinner.HiddenChange(maxPage);
             }
         }
 
         protected override void OnResize()
         {
             base.OnResize();
-            UpdateRender();
             UpdateSpinner();
+            UpdateRender();
+        }
+
+        public Field[] GetFields()
+        {
+            return fields.ToArray();
+        }
+
+        public int Count()
+        {
+            return fields.Count();
         }
     }
 }
