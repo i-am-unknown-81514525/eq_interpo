@@ -21,92 +21,13 @@ namespace eq_interpo
             Switcher switcher = new Switcher();
             Logger logger = new Logger();
             PagingTable table = new PagingTable(new Field(new[] { new TextLabel("x"), new TextLabel("f(x)"), new TextLabel("Is Active") }));
-            BoundedSpinner spinner;
             switcher = new Switcher() {
-                new VerticalGroupComponent() {
-                    (
-                        table = new PagingTable(
-                            new Field(new[] {new TextLabel("x"), new TextLabel("f(x)"), new TextLabel("Is Active")}),
-                            spinner = new BoundedSpinner("Entries", 1, 1, 1000)
-                            .WithChangeHandler(
-                                (v) => {
-                                    while (v > table.Count()) {
-                                        table.Push(
-                                            new Field(
-                                                new IComponent[] {
-                                                    new SingleLineInputField().WithChange((comp) => comp.underline = false),
-                                                    new SingleLineInputField().WithChange((comp) => comp.underline = false),
-                                                    new ToggleButton()
-                                                    .WithHandler<ToggleStore, ToggleButton>(
-                                                        (button_inner, ___) => {
-                                                            button_inner.store.isToggled = !button_inner.store.isToggled;
-                                                            if (button_inner.store.isToggled) {
-                                                                button_inner.text = "☑";
-                                                                button_inner.foreground = ForegroundColorEnum.GREEN;
-                                                            } else {
-                                                                button_inner.text = "☐";
-                                                                button_inner.foreground = ForegroundColorEnum.RED;
-                                                            }
-                                                    })
-                                                    .WithChange(
-                                                        (button_inner) => {
-                                                            button_inner.store.isToggled = true;
-                                                            button_inner.text = "☑";
-                                                            button_inner.foreground = ForegroundColorEnum.GREEN;
-                                                        }
-                                                    )
-                                                }
-                                            )
-                                        );
-                                    }
-                                    while (v < table.Count()) {
-                                        table.RemoveLast();
-                                    }
-                                }
-                            ),
-                            new Button("Submit")
-                            .WithHandler(
-                                (__, ___) => {
-                                    bool valid = true;
-                                    if (table.Count() == 0) {
-                                        valid = false;
-                                        logger.Push("Error: Have 0 entries");
-                                    }
-                                    Field[] fields = table.GetFields();
-                                    List<Fraction> fracs = new List<Fraction>();
-                                    foreach (Field field in fields) {
-                                        for (int x = 0; x < 2; x++) {
-                                            SingleLineInputField input = (SingleLineInputField)field.comp[x];
-                                            if (Fraction.TryParse(input.content, out Fraction frac)) {
-                                                if (x==0) {
-                                                    if (fracs.Contains(frac)) {
-                                                        valid = false;
-                                                        logger.Push("Error: Contain repeated x value");
-                                                    } else {
-                                                        fracs.Add(frac);
-                                                    }
-                                                }
-                                            } else {
-                                                logger.Push("Error: Contain field that cannot be parsed as a fraction");
-                                                valid = false;
-                                            }
-                                        }
-                                    }
-                                    if (valid) {
-                                        switcher.SwitchTo(1);
-                                    }
-                                }
-                            )
-                        )
-                    ),
-                    (logger, 1),
-                },
+                new DataEntry(switcher),
                 new VerticalGroupComponent() {
                     new TextLabel("Valid input and TODO"),
                     new Button("Back").WithHandler((__, ___) => switcher.SwitchTo(0))
                 }
             };
-            spinner.WithTriggerChange();
             new App(switcher).WithExitHandler<EmptyStore, App>((appObj) =>
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
