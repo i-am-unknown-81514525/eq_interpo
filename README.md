@@ -40,4 +40,5 @@ Followup update made after the demo:
 <img width="2702" height="1180" alt="image" src="https://github.com/user-attachments/assets/3ed5360a-8e3f-4e74-a5bc-4de99bd2e298" />
 <img width="2704" height="1184" alt="image" src="https://github.com/user-attachments/assets/fdb3b145-890a-491e-aa6b-fa4299a60e51" />
 <img width="2802" height="1768" alt="image" src="https://github.com/user-attachments/assets/815b8d5e-c1d6-47c4-821b-568e9cf503a7" />
+(From the output, the MAE calculated is 0.33748880222804523 if I didn't type it incorrectly in the calculator)
 
