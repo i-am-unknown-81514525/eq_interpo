@@ -30,7 +30,7 @@ namespace eq_interpo
             for (int i = 0; i < data.Length; i++)
             {
                 int r_idx = idx - i;
-                if (r_idx % 2 == 0)
+                if (r_idx % 2 == 0 && r_idx >= 0)
                 {
                     content.Add(new TextLabel(data[i][r_idx / 2].value.ToString()));
                 }
