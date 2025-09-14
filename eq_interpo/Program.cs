@@ -45,21 +45,39 @@ namespace eq_interpo
             return rt_result;
         }
 
+        public static Fraction CalculateMAE(Poly poly, Entry[] entries)
+        {
+            if (entries.Length == 0) return new Fraction(1);
+            Fraction total = new Fraction(0);
+            foreach (Entry entry in entries)
+            {
+                Fraction value = poly.Calculate(entry.x) - entry.fx;
+                if (value < 0) value = -value;
+                total += value;
+            }
+            return total / new Fraction(entries.Length);
+        }
+
         public static void ProcessMathDisplay(ContainerGroup group, Entry[] entries)
         {
             List<DivDiff[]> processed = FieldParser.Process(entries);
             group.out_table.Set(new DataOutput(processed));
             Poly result = CalculatePolynomial(processed);
+            Fraction mae = CalculateMAE(result, entries.Where(x => !x.isActive).ToArray());
             group.out_meta.Set(
-                new Button(result.ToString())
-                    .WithForeground<EmptyStore, Button>(ForegroundColorEnum.WHITE)
-                    .WithBackground<EmptyStore, Button>(BackgroundColorEnum.BLACK)
-                    .WithHandler((_, __) =>
-                    {
-                        ui.core.ConsoleHandler.ConsoleIntermediateHandler.WriteClipboard(result.AsLatex());
-                        File.WriteAllText(".clipboard", result.AsLatex());
-                    }
-                )
+                new VerticalGroupComponent() {
+                    new Button(result.ToString())
+                        .WithForeground<EmptyStore, Button>(ForegroundColorEnum.WHITE)
+                        .WithBackground<EmptyStore, Button>(BackgroundColorEnum.BLACK)
+                        .WithHandler(
+                            (_, __) =>
+                            {
+                                ui.core.ConsoleHandler.ConsoleIntermediateHandler.WriteClipboard(result.AsLatex());
+                                File.WriteAllText(".clipboard", result.AsLatex());
+                            }
+                        ),
+                    (new TextLabel($"MAE= {mae}"), 1)
+                }
             );
         }
 

@@ -148,5 +148,20 @@ namespace eq_interpo.math
             }
             return builder.ToString();
         }
+
+        public Fraction Calculate(Fraction x)
+        {
+            Fraction base_v = new Fraction(0);
+            for (int o = 0; o < term.Length; o++)
+            {
+                Fraction pow = new Fraction(1);
+                for (int i = 0; i < o; i++)
+                {
+                    pow *= x;
+                }
+                base_v += pow * term[o];
+            }
+            return base_v;
+        }
     }
 }
