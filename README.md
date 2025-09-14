@@ -30,3 +30,7 @@ A TUI program which interpolate a curve with a polynomial formula using [Newton 
 - [ ] Pasting list of input at once
 - [ ] Horizontal Paging for the output table when it is too wide
 - [x] Precise math calculation by not using float etc.
+
+### Video demo
+
+https://github.com/user-attachments/assets/00b86861-3e6e-4a80-ae2c-2828e8d15f0a
