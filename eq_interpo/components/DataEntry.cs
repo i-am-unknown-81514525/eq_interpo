@@ -8,7 +8,7 @@ namespace eq_interpo.components
 {
     public class DataEntry : Container
     {
-        public readonly Switcher switcher;
+        public readonly ComponentHolder<Switcher> switcher;
         public readonly PagingTable table;
         public readonly BoundedSpinner spinner;
         public readonly Logger logger = new Logger();
@@ -82,7 +82,7 @@ namespace eq_interpo.components
             return valid;
         }
 
-        public DataEntry(Switcher switcher)
+        public DataEntry(ComponentHolder<Switcher> switcher)
         {
             this.switcher = switcher;
             Add(
@@ -101,15 +101,7 @@ namespace eq_interpo.components
                                     }
                                 }
                             ),
-                            new Button("Submit")
-                            .WithHandler(
-                                (__, ___) => {
-                                    bool valid = SubmitHandler();
-                                    if (valid) {
-                                        switcher.SwitchTo(1);
-                                    }
-                                }
-                            )
+                            new PageSwitcher(switcher, "Submit", SubmitHandler, 1)
                         )
                     ),
                     (logger, 1),

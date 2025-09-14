@@ -18,17 +18,16 @@ namespace eq_interpo
             SingleLineInputField x0_inputField = new SingleLineInputField();
             Fraction h_value = 0;
             Fraction x0_value = 0;
-            Switcher switcher = new Switcher();
-            Logger logger = new Logger();
+            ComponentHolder<Switcher> switcher = new ComponentHolder<Switcher>();
             PagingTable table = new PagingTable(new Field(new[] { new TextLabel("x"), new TextLabel("f(x)"), new TextLabel("Is Active") }));
-            switcher = new Switcher() {
+            switcher.inner = new Switcher() {
                 new DataEntry(switcher),
                 new VerticalGroupComponent() {
                     new TextLabel("Valid input and TODO"),
-                    new Button("Back").WithHandler((__, ___) => switcher.SwitchTo(0))
+                    (new PageSwitcher(switcher, "Back", 0), 1)
                 }
             };
-            new App(switcher).WithExitHandler<EmptyStore, App>((appObj) =>
+            new App(switcher.inner).WithExitHandler<EmptyStore, App>((appObj) =>
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
                 Console.WriteLine(ui.DEBUG.DebugStore.ToString());
