@@ -2,10 +2,11 @@ using ui.math;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using ui.LatexExt;
 
 namespace eq_interpo.math
 {
-    public struct Poly
+    public struct Poly : ILatex
     {
         private readonly Fraction[] term;
 
@@ -58,6 +59,10 @@ namespace eq_interpo.math
         public static Poly operator *(Poly left, Poly right)
         {
             Fraction[] out_frac = new Fraction[left.GetGreatestOrder() + right.GetGreatestOrder() + 1];
+            for (int i = 0; i < out_frac.Length; i++)
+            {
+                out_frac[i] = new Fraction(0);
+            }
             for (int l_i = 0; l_i <= left.GetGreatestOrder(); l_i++)
             {
                 for (int l_r = 0; l_r <= right.GetGreatestOrder(); l_r++)
@@ -104,6 +109,41 @@ namespace eq_interpo.math
                     postfix = "";
                 }
                 builder.Append($"{sign}{value} {postfix}");
+                initial = false;
+            }
+            return builder.ToString();
+        }
+
+        public string AsLatex()
+        {
+            var term = this.term;
+            (int order, Fraction value)[] arr = Enumerable.Range(0, this.GetGreatestOrder() + 1).Select(i => (i, term[i])).OrderByDescending(d => d.i).ToArray();
+            StringBuilder builder = new StringBuilder();
+            bool initial = true;
+            foreach ((int order, Fraction value) in arr)
+            {
+                if (value == 0 && (order != 0 || (order == 0 && !initial)))
+                {
+                    continue;
+                }
+                string sign = value >= 0 ? "+" : "";
+                string postfix = $"x^{{{order}}}";
+                if (initial && value >= 0)
+                {
+                    sign = "";
+                }
+                if (order == 1)
+                {
+                    postfix = "x";
+                }
+                if (order == 0)
+                {
+                    postfix = "";
+                }
+                if (value >= 0)
+                    builder.Append($"{sign}{value.AsLatex().Trim('$')} {postfix}");
+                else
+                    builder.Append($"-{(-value).AsLatex().Trim('$')} {postfix}");
                 initial = false;
             }
             return builder.ToString();

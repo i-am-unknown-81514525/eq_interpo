@@ -7,6 +7,7 @@ using ui.fmt;
 using System;
 using System.Collections.Generic;
 using eq_interpo.math;
+using System.IO;
 
 // f(x) = f(x_0) + (x-x_0)(x-x_1)/1!h*(delta)f(x_0) + ...
 
@@ -48,7 +49,18 @@ namespace eq_interpo
         {
             List<DivDiff[]> processed = FieldParser.Process(entries);
             group.out_table.Set(new DataOutput(processed));
-            group.out_meta.Set(new TextLabel(CalculatePolynomial(processed).ToString()));
+            Poly result = CalculatePolynomial(processed);
+            group.out_meta.Set(
+                new Button(result.ToString())
+                    .WithForeground<EmptyStore, Button>(ForegroundColorEnum.WHITE)
+                    .WithBackground<EmptyStore, Button>(BackgroundColorEnum.BLACK)
+                    .WithHandler((_, __) =>
+                    {
+                        ui.core.ConsoleHandler.ConsoleIntermediateHandler.WriteClipboard(result.AsLatex());
+                        File.WriteAllText(".clipboard", result.AsLatex());
+                    }
+                )
+            );
         }
 
         public static void Main(string[] _)
