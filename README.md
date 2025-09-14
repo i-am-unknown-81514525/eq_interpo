@@ -2,6 +2,20 @@
 
 A TUI program which interpolate a curve with a polynomial formula using [Newton Polynomial method](https://en.wikipedia.org/wiki/Newton_polynomial) from the given set of point
 
+### How to use
+- For testing
+  - Input a series of `x` and `y` value from a curve that you know
+  - Click submit and then next
+  - Click on the formula to copy it (It is expected that it might not be in your clipboard, in this case, copy the value from `.clipboard`)
+  - Compare the interpolated graph to the actual graph in Desmos (You can just pasted it into Desmos since the copy output is output as Latex)
+- For actual usage
+  - Input a series of `x` and `y` value from a curve that you know
+  - Click submit and see if you see any value that seem abnormal
+  - Go back and toggle those entries off if you believe it cause issue
+  - Similar to how you do testing, but you compare against the curve to what roughly should happen (For example, if you expect a somewhat linear relationship but those point just keep going up and down because inaccuracy in the data collection)
+  - Repeat this with enabling and disabling some entries to see if you can find what you want
+
+
 ### Feature List
 - [x] The basic (obviously)
 - [x] Display step for the table
