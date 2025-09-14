@@ -20,10 +20,12 @@ namespace eq_interpo
             Fraction x0_value = 0;
             ComponentHolder<Switcher> switcher = new ComponentHolder<Switcher>();
             PagingTable table = new PagingTable(new Field(new[] { new TextLabel("x"), new TextLabel("f(x)"), new TextLabel("Is Active") }));
+            Container container = new Container();
+            container.Add(new Padding());
             switcher.inner = new Switcher() {
-                new DataEntry(switcher),
+                new DataEntry(switcher, container),
                 new VerticalGroupComponent() {
-                    new TextLabel("Valid input and TODO"),
+                    container,
                     (new PageSwitcher(switcher, "Back", 0), 1)
                 }
             };

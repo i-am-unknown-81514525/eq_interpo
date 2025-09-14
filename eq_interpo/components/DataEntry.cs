@@ -3,6 +3,7 @@ using ui.components.chainExt;
 using ui.fmt;
 using ui.math;
 using System.Collections.Generic;
+using eq_interpo.math;
 
 namespace eq_interpo.components
 {
@@ -12,6 +13,7 @@ namespace eq_interpo.components
         public readonly PagingTable table;
         public readonly BoundedSpinner spinner;
         public readonly Logger logger = new Logger();
+        public readonly Container container;
 
         public static Field Constructor()
         {
@@ -79,12 +81,21 @@ namespace eq_interpo.components
                     }
                 }
             }
+            if (valid)
+            {
+                if (!(container.GetInner() is null))
+                {
+                    container.RemoveChildComponent(container.GetInner());
+                }
+                container.Add(new DataOutput(FieldParser.Process(FieldParser.Parse(table.GetFields()))));
+            }
             return valid;
         }
 
-        public DataEntry(ComponentHolder<Switcher> switcher)
+        public DataEntry(ComponentHolder<Switcher> switcher, Container container)
         {
             this.switcher = switcher;
+            this.container = container;
             Add(
                 new VerticalGroupComponent() {
                     (
