@@ -21,12 +21,13 @@ namespace eq_interpo
             Switcher switcher = new Switcher();
             Logger logger = new Logger();
             PagingTable table = new PagingTable(new Field(new[] { new TextLabel("x"), new TextLabel("f(x)"), new TextLabel("Is Active") }));
+            BoundedSpinner spinner;
             switcher = new Switcher() {
                 new VerticalGroupComponent() {
                     (
                         table = new PagingTable(
                             new Field(new[] {new TextLabel("x"), new TextLabel("f(x)"), new TextLabel("Is Active")}),
-                            new BoundedSpinner("Entries", 1, 1, 1000)
+                            spinner = new BoundedSpinner("Entries", 1, 1, 1000)
                             .WithChangeHandler(
                                 (v) => {
                                     while (v > table.Count()) {
@@ -62,13 +63,15 @@ namespace eq_interpo
                                         table.RemoveLast();
                                     }
                                 }
-                            )
-                            .WithTriggerChange(),
+                            ),
                             new Button("Submit")
                             .WithHandler(
                                 (__, ___) => {
                                     bool valid = true;
-                                    if (table.Count() == 0) valid = false;
+                                    if (table.Count() == 0) {
+                                        valid = false;
+                                        logger.Push("Error: Have 0 entries");
+                                    }
                                     Field[] fields = table.GetFields();
                                     List<Fraction> fracs = new List<Fraction>();
                                     foreach (Field field in fields) {
@@ -78,11 +81,13 @@ namespace eq_interpo
                                                 if (x==0) {
                                                     if (fracs.Contains(frac)) {
                                                         valid = false;
+                                                        logger.Push("Error: Contain repeated x value");
                                                     } else {
                                                         fracs.Add(frac);
                                                     }
                                                 }
                                             } else {
+                                                logger.Push("Error: Contain field that cannot be parsed as a fraction");
                                                 valid = false;
                                             }
                                         }
@@ -93,13 +98,15 @@ namespace eq_interpo
                                 }
                             )
                         )
-                    )
+                    ),
+                    (logger, 1),
                 },
                 new VerticalGroupComponent() {
                     new TextLabel("Valid input and TODO"),
                     new Button("Back").WithHandler((__, ___) => switcher.SwitchTo(0))
                 }
             };
+            spinner.WithTriggerChange();
             new App(switcher).WithExitHandler<EmptyStore, App>((appObj) =>
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
