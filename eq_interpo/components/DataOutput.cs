@@ -48,8 +48,8 @@ namespace eq_interpo
             List<string> fields_name = new List<string>() { "x" };
             for (int d = 0; d < this.data.Length; d++)
             {
-                string prefix = $"Δ{FieldParser.GetSuperScript(d)}";
-                fields_name.Add((d != 0 ? prefix : "") + "f(x)");
+                string normal = $"{d}-DD"; // $"Δ{FieldParser.GetSuperScript(d)}";
+                fields_name.Add(d != 0 ? normal : "f(x)");
             }
             table = new PagingTable(new Field(fields_name.Select(f => new TextLabel(f))));
             Add(table);

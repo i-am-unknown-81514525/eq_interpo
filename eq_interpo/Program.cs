@@ -5,6 +5,7 @@ using eq_interpo.components;
 using ui.fmt;
 using System;
 using System.Collections.Generic;
+using eq_interpo.math;
 
 // f(x) = f(x_0) + (x-x_0)(x-x_1)/1!h*(delta)f(x_0) + ...
 
@@ -12,6 +13,11 @@ namespace eq_interpo
 {
     public static class Program
     {
+        public static void ProcessMathDisplay(ContainerGroup group, Entry[] entries)
+        {
+            group.out_table.Set(new DataOutput(FieldParser.Process(entries)));
+        }
+
         public static void Main(string[] _)
         {
             SingleLineInputField h_inputField = new SingleLineInputField();
@@ -20,13 +26,15 @@ namespace eq_interpo
             Fraction x0_value = 0;
             ComponentHolder<Switcher> switcher = new ComponentHolder<Switcher>();
             PagingTable table = new PagingTable(new Field(new[] { new TextLabel("x"), new TextLabel("f(x)"), new TextLabel("Is Active") }));
-            Container container = new Container();
-            container.Add(new Padding());
+            ContainerGroup group = new ContainerGroup();
             switcher.inner = new Switcher() {
-                new DataEntry(switcher, container),
+                new DataEntry(switcher, group),
                 new VerticalGroupComponent() {
-                    container,
-                    (new PageSwitcher(switcher, "Back", 0), 1)
+                    group.out_table,
+                    (new HorizontalGroupComponent() {
+                        new PageSwitcher(switcher, "Back", 0),
+                        new PageSwitcher(switcher, "Next", 2)
+                    }, 1)
                 }
             };
             new App(switcher.inner).WithExitHandler<EmptyStore, App>((appObj) =>

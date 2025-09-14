@@ -13,7 +13,7 @@ namespace eq_interpo.components
         public readonly PagingTable table;
         public readonly BoundedSpinner spinner;
         public readonly Logger logger = new Logger();
-        public readonly Container container;
+        public readonly ContainerGroup group;
 
         public static Field Constructor()
         {
@@ -83,19 +83,15 @@ namespace eq_interpo.components
             }
             if (valid)
             {
-                if (!(container.GetInner() is null))
-                {
-                    container.RemoveChildComponent(container.GetInner());
-                }
-                container.Add(new DataOutput(FieldParser.Process(FieldParser.Parse(table.GetFields()))));
+                Program.ProcessMathDisplay(group, FieldParser.Parse(table.GetFields()));
             }
             return valid;
         }
 
-        public DataEntry(ComponentHolder<Switcher> switcher, Container container)
+        public DataEntry(ComponentHolder<Switcher> switcher, ContainerGroup group)
         {
             this.switcher = switcher;
-            this.container = container;
+            this.group = group;
             Add(
                 new VerticalGroupComponent() {
                     (

@@ -10,11 +10,13 @@ namespace eq_interpo.math
     {
         public readonly Fraction x;
         public readonly Fraction fx;
+        public readonly bool isActive;
 
-        public Entry(Fraction x, Fraction fx)
+        public Entry(Fraction x, Fraction fx, bool isActive)
         {
             this.x = x;
             this.fx = fx;
+            this.isActive = isActive;
         }
     }
 
@@ -27,10 +29,12 @@ namespace eq_interpo.math
             {
                 SingleLineInputField x_field = (SingleLineInputField)field.comp[0];
                 SingleLineInputField fx_field = (SingleLineInputField)field.comp[1];
+                ToggleButton button = (ToggleButton)field.comp[2];
                 entries.Add(
                     new Entry(
                         Fraction.Parse(x_field.content),
-                        Fraction.Parse(fx_field.content)
+                        Fraction.Parse(fx_field.content),
+                        button.store.isToggled
                     )
                 );
             }
@@ -50,6 +54,7 @@ namespace eq_interpo.math
 
         public static List<DivDiff[]> Process(Entry[] entries)
         {
+            entries = entries.Where(x => x.isActive).ToArray();
             List<DivDiff[]> output = new List<DivDiff[]>();
             DivDiff[] base_div = new DivDiff[entries.Length];
             for (int i = 0; i < entries.Length; i++)
