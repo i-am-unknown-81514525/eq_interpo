@@ -25,7 +25,7 @@ A TUI program which interpolate a curve with a polynomial formula using [Newton 
 - [x] Autobuild with [Github Action](https://github.com/i-am-unknown-81514525/eq_interpo/actions/workflows/full_build.yaml) for Windows/Linux/macOS in x86_64/ARM64
 - [ ] Method to disable writing to `.clipboard` (for situation where it can copy correctly)
 - [x] Allow deactivatng point from being used for interpolationn
-- [ ] Calculate Loss based on the point not used to interpolate the graph
+- [x] Calculate Loss based on the point not used to interpolate the graph
 - [ ] Better UI
 - [ ] Pasting list of input at once
 - [ ] Horizontal Paging for the output table when it is too wide
@@ -34,3 +34,10 @@ A TUI program which interpolate a curve with a polynomial formula using [Newton 
 ### Video demo
 
 https://github.com/user-attachments/assets/00b86861-3e6e-4a80-ae2c-2828e8d15f0a
+
+Followup update made after the demo:
+- Calculating MAE (Mean Absolute Error) (Example came from interpolating f(x)=sqrt(x)
+<img width="2702" height="1180" alt="image" src="https://github.com/user-attachments/assets/3ed5360a-8e3f-4e74-a5bc-4de99bd2e298" />
+<img width="2704" height="1184" alt="image" src="https://github.com/user-attachments/assets/fdb3b145-890a-491e-aa6b-fa4299a60e51" />
+<img width="2802" height="1768" alt="image" src="https://github.com/user-attachments/assets/815b8d5e-c1d6-47c4-821b-568e9cf503a7" />
+
