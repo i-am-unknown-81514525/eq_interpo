@@ -9,11 +9,12 @@ namespace eq_interpo.components
 {
     public struct Field
     {
-        public IComponent[] comp { get; set; }
+        private IComponent[] _comp;
+        public IComponent[] comp { get => _comp.ToArray(); }
 
         public Field(IEnumerable<IComponent> src)
         {
-            comp = src.ToArray();
+            _comp = src.ToArray();
         }
     }
 
